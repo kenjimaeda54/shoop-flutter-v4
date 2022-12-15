@@ -23,8 +23,12 @@ class _AuthFormState extends State<AuthForm>
   final formKey = GlobalKey<FormState>();
   TypeAuth typeAuth = TypeAuth.signIn;
   bool isLoading = false;
+
+  //maneira de criar manualmente animação
   AnimationController? animationController;
-  Animation<Size>? heightAnimation;
+
+  // Animation<Size>? heightAnimation;
+  Animation<double>? opacitAnimation;
 
   //para comparar se o as senhas são iguais
   final passwordController = TextEditingController();
@@ -33,18 +37,13 @@ class _AuthFormState extends State<AuthForm>
   @override
   void initState() {
     super.initState();
-    //essa classe implementei o mixin SingleTickerProviderStateMixin
     animationController = AnimationController(
-        vsync: this,
-        duration: const Duration(
-          milliseconds: 300,
-        ));
-    heightAnimation = Tween(
-            begin: const Size(double.infinity, 330),
-            end: const Size(double.infinity, 400))
-        .animate(CurvedAnimation(
-            parent: animationController!, curve: Curves.linear));
-    animationController?.addListener(() => setState(() {}));
+        vsync: this, duration: const Duration(milliseconds: 300));
+    opacitAnimation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+        CurvedAnimation(parent: animationController!, curve: Curves.linear));
   }
 
   @override
@@ -52,6 +51,29 @@ class _AuthFormState extends State<AuthForm>
     super.dispose();
     animationController?.dispose();
   }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   //essa classe implementei o mixin SingleTickerProviderStateMixin
+  //   animationController = AnimationController(
+  //       vsync: this,
+  //       duration: const Duration(
+  //         milliseconds: 300,
+  //       ));
+  //   heightAnimation = Tween(
+  //           begin: const Size(double.infinity, 330),
+  //           end: const Size(double.infinity, 400))
+  //       .animate(CurvedAnimation(
+  //           parent: animationController!, curve: Curves.linear));
+  //   animationController?.addListener(() => setState(() {}));
+  // }
+  //
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   animationController?.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -156,15 +178,19 @@ class _AuthFormState extends State<AuthForm>
       setState(() => typeAuth = auth);
       if (auth == TypeAuth.signUp) {
         //estou saindo do menor indo para maior
+        //isso e essencial para controller funcionar
         animationController?.forward();
         return;
       }
       animationController?.reverse();
     }
 
-    return Container(
-      height: heightAnimation?.value.height ??
-          (typeAuth == TypeAuth.signUp ? 400 : 330),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+      // height: heightAnimation?.value.height ??
+      //     (typeAuth == TypeAuth.signUp ? 400 : 330),
+      height: typeAuth == TypeAuth.signUp ? 400 : 330,
       width: deviceSize.width * 0.78,
       padding: const EdgeInsets.only(top: 20),
       child: Card(
@@ -190,15 +216,26 @@ class _AuthFormState extends State<AuthForm>
                     label: Text("Senha"),
                   ),
                 ),
-                if (typeAuth == TypeAuth.signUp)
-                  TextFormField(
-                    obscureText: true,
-                    onSaved: (text) =>
-                        handleSave(text: text, field: "confirmPassword"),
-                    decoration:
-                        const InputDecoration(label: Text("Confirmar senha")),
-                    validator: validatorPasswordIsEqual,
+                AnimatedContainer(
+                  //para controlar se o campo ira aparecer ou não
+                  constraints: BoxConstraints(
+                    minHeight: typeAuth == TypeAuth.signIn ? 0 : 60,
+                    maxHeight: typeAuth == TypeAuth.signIn ? 0 : 120,
                   ),
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.linear,
+                  child: FadeTransition(
+                    opacity: opacitAnimation!,
+                    child: TextFormField(
+                      obscureText: true,
+                      onSaved: (text) =>
+                          handleSave(text: text, field: "confirmPassword"),
+                      decoration:
+                          const InputDecoration(label: Text("Confirmar senha")),
+                      validator: validatorPasswordIsEqual,
+                    ),
+                  ),
+                ),
                 isLoading
                     //para diminuir um tamanho pode usar o tranform
                     ? Transform.scale(
