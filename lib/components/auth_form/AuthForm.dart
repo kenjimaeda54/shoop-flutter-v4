@@ -16,16 +16,42 @@ enum TypeAuth {
   signUp,
 }
 
-class _AuthFormState extends State<AuthForm> {
+class _AuthFormState extends State<AuthForm>
+    with SingleTickerProviderStateMixin {
   //global key não pode ficar dentro do build(BuildContext context)
   //https://stackoverflow.com/questions/51320692/flutter-keyboard-disappears-immediately-when-editing-my-text-fields
   final formKey = GlobalKey<FormState>();
   TypeAuth typeAuth = TypeAuth.signIn;
   bool isLoading = false;
+  AnimationController? animationController;
+  Animation<Size>? heightAnimation;
 
   //para comparar se o as senhas são iguais
   final passwordController = TextEditingController();
   final formData = <String, Object>{};
+
+  @override
+  void initState() {
+    super.initState();
+    //essa classe implementei o mixin SingleTickerProviderStateMixin
+    animationController = AnimationController(
+        vsync: this,
+        duration: const Duration(
+          milliseconds: 300,
+        ));
+    heightAnimation = Tween(
+            begin: const Size(double.infinity, 330),
+            end: const Size(double.infinity, 400))
+        .animate(CurvedAnimation(
+            parent: animationController!, curve: Curves.linear));
+    animationController?.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    animationController?.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,10 +152,19 @@ class _AuthFormState extends State<AuthForm> {
       return null;
     }
 
-    void toggleAuth(TypeAuth auth) => setState(() => typeAuth = auth);
+    void toggleAuth(TypeAuth auth) {
+      setState(() => typeAuth = auth);
+      if (auth == TypeAuth.signUp) {
+        //estou saindo do menor indo para maior
+        animationController?.forward();
+        return;
+      }
+      animationController?.reverse();
+    }
 
     return Container(
-      height: typeAuth == TypeAuth.signUp ? 400 : 330,
+      height: heightAnimation?.value.height ??
+          (typeAuth == TypeAuth.signUp ? 400 : 330),
       width: deviceSize.width * 0.78,
       padding: const EdgeInsets.only(top: 20),
       child: Card(
