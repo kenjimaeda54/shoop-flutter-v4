@@ -29,6 +29,7 @@ class _AuthFormState extends State<AuthForm>
 
   // Animation<Size>? heightAnimation;
   Animation<double>? opacitAnimation;
+  Animation<Offset>? slideAnimaiton;
 
   //para comparar se o as senhas são iguais
   final passwordController = TextEditingController();
@@ -39,11 +40,21 @@ class _AuthFormState extends State<AuthForm>
     super.initState();
     animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
+
     opacitAnimation = Tween(
       begin: 0.0,
       end: 1.0,
     ).animate(
-        CurvedAnimation(parent: animationController!, curve: Curves.linear));
+      //e argument type 'AnimationController?' can't be assigned to the parameter type 'Animation<double>'
+      //precisa forcar o animated animationController
+      CurvedAnimation(parent: animationController!, curve: Curves.linear),
+    );
+
+    slideAnimaiton =
+        Tween<Offset>(begin: const Offset(0, -1.5), end: const Offset(0, 0))
+            .animate(
+      CurvedAnimation(parent: animationController!, curve: Curves.linear),
+    );
   }
 
   @override
@@ -217,22 +228,26 @@ class _AuthFormState extends State<AuthForm>
                   ),
                 ),
                 AnimatedContainer(
-                  //para controlar se o campo ira aparecer ou não
-                  constraints: BoxConstraints(
-                    minHeight: typeAuth == TypeAuth.signIn ? 0 : 60,
-                    maxHeight: typeAuth == TypeAuth.signIn ? 0 : 120,
-                  ),
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.linear,
+                  constraints: BoxConstraints(
+                    maxHeight: typeAuth == TypeAuth.signIn ? 0 : 120,
+                    minHeight: typeAuth == TypeAuth.signIn ? 0 : 60,
+                  ),
                   child: FadeTransition(
+                    //The argument type 'Animation<double>?' can't be assigned to the parameter type 'Animation<double>'
+                    //precisa do !
                     opacity: opacitAnimation!,
-                    child: TextFormField(
-                      obscureText: true,
-                      onSaved: (text) =>
-                          handleSave(text: text, field: "confirmPassword"),
-                      decoration:
-                          const InputDecoration(label: Text("Confirmar senha")),
-                      validator: validatorPasswordIsEqual,
+                    child: SlideTransition(
+                      position: slideAnimaiton!,
+                      child: TextFormField(
+                        obscureText: true,
+                        onSaved: (text) =>
+                            handleSave(text: text, field: "confirmPassword"),
+                        decoration: const InputDecoration(
+                            label: Text("Confirmar senha")),
+                        validator: validatorPasswordIsEqual,
+                      ),
                     ),
                   ),
                 ),
