@@ -9,38 +9,47 @@ class ProductDetails extends StatelessWidget {
     final product = ModalRoute.of(context)?.settings.arguments as ProductModel;
 
     return Scaffold(
+        //com customScroolView consigo colocar uma imagem no topo do app bar
+        //tambem consigo assim que arrastar ficar so aparecendo o titulo some a imagem se usar pined
         body: CustomScrollView(
       slivers: [
         SliverAppBar(
-          expandedHeight: 300,
-          pinned: true,
+          //background color sera do app bar
+          backgroundColor: Theme.of(context).primaryColor,
           iconTheme: const IconThemeData(
             color: Colors.black87,
           ),
+          expandedHeight: 300,
+          pinned: true,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(product.title,
-                style: const TextStyle(
-                  color: Colors.black,
-                )),
+                style: const TextStyle(color: Colors.black87)),
             background: Hero(
-                tag: product.id,
-                child: Image.network(
-                  product.imageUrl,
-                  fit: BoxFit.cover,
-                )),
+              tag: product.id,
+              child: Image.network(product.imageUrl, fit: BoxFit.cover),
+            ),
           ),
         ),
         SliverList(
             delegate: SliverChildListDelegate([
-          const SizedBox(height: 20),
+          const SizedBox(
+            height: 20,
+          ),
           Text(
-            "R\$ ${product.price.toStringAsFixed(2)},",
+            "R\$ ${product.price.toStringAsFixed(2)}",
+            style: const TextStyle(
+              fontSize: 20,
+            ),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 10,
           ),
           Text(
             product.description,
+            style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
-          )
+          ),
         ]))
       ],
     ));
