@@ -73,12 +73,19 @@ class SingleShop extends StatelessWidget {
       child: ClipRRect(
           borderRadius: BorderRadius.circular(5),
           child: GestureDetector(
-            onTap: handleNavigation,
-            child: Image.network(
-              product.imageUrl,
-              fit: BoxFit.cover,
-            ),
-          )),
+              onTap: handleNavigation,
+              //https://blog.flutterando.com.br/desmitificando-fadeinimage-2aa0a8f48054
+              //hero e algo interessante preciso de colocar uma tag unica em quem pretendo
+              //criar o hero da origem e destino
+              //aqui e origin quando clicarem na imagem
+              child: Hero(
+                tag: product.id,
+                child: FadeInImage.assetNetwork(
+                  placeholder: "assets/images/product-placeholder.png",
+                  image: product.imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ))),
     );
   }
 }

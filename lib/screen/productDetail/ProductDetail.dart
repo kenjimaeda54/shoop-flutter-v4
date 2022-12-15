@@ -9,23 +9,40 @@ class ProductDetails extends StatelessWidget {
     final product = ModalRoute.of(context)?.settings.arguments as ProductModel;
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Text(product.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          SizedBox(
-            height: 300,
-            width: double.infinity,
-            child: Image.network(product.imageUrl),
+        body: CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          expandedHeight: 300,
+          pinned: true,
+          iconTheme: const IconThemeData(
+            color: Colors.black87,
           ),
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(product.title,
+                style: const TextStyle(
+                  color: Colors.black,
+                )),
+            background: Hero(
+                tag: product.id,
+                child: Image.network(
+                  product.imageUrl,
+                  fit: BoxFit.cover,
+                )),
+          ),
+        ),
+        SliverList(
+            delegate: SliverChildListDelegate([
           const SizedBox(height: 20),
-          Text("R\$ ${product.price.toStringAsFixed(2)}"),
-          Text(product.description)
-        ]),
-      ),
-    );
+          Text(
+            "R\$ ${product.price.toStringAsFixed(2)},",
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            product.description,
+            textAlign: TextAlign.center,
+          )
+        ]))
+      ],
+    ));
   }
 }

@@ -24,45 +24,37 @@ class _AuthFormState extends State<AuthForm>
   TypeAuth typeAuth = TypeAuth.signIn;
   bool isLoading = false;
 
-  //maneira de criar manualmente animação
+  // //maneira de criar manualmente animação
   AnimationController? animationController;
 
-  // Animation<Size>? heightAnimation;
-  Animation<double>? opacitAnimation;
+  //
+  // // Animation<Size>? heightAnimation;
+  // Animation<double>? opacitAnimation;
   Animation<Offset>? slideAnimaiton;
 
   //para comparar se o as senhas são iguais
   final passwordController = TextEditingController();
   final formData = <String, Object>{};
 
-  @override
-  void initState() {
-    super.initState();
-    animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 300));
-
-    opacitAnimation = Tween(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(
-      //e argument type 'AnimationController?' can't be assigned to the parameter type 'Animation<double>'
-      //precisa forcar o animated animationController
-      CurvedAnimation(parent: animationController!, curve: Curves.linear),
-    );
-
-    slideAnimaiton =
-        Tween<Offset>(begin: const Offset(0, -1.5), end: const Offset(0, 0))
-            .animate(
-      CurvedAnimation(parent: animationController!, curve: Curves.linear),
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    animationController?.dispose();
-  }
-
+  // @override
+  //   // animationController = AnimationController(
+  //   //     vsync: this, duration: const Duration(milliseconds: 300));
+  //   //
+  //   // opacitAnimation = Tween(
+  //   //   begin: 0.0,
+  //   //   end: 1.0,
+  //   // ).animate(
+  //   //   //e argument type 'AnimationController?' can't be assigned to the parameter type 'Animation<double>'
+  //   //   //precisa forcar o animated animationController
+  //   //   CurvedAnimation(parent: animationController!, curve: Curves.linear),
+  //   // );
+  //   //
+  //   // slideAnimaiton =
+  //   //     Tween<Offset>(begin: const Offset(0, -1.5), end: const Offset(0, 0))
+  //   //         .animate(
+  //   //   CurvedAnimation(parent: animationController!, curve: Curves.linear),
+  //   // );
+  // }
   // @override
   // void initState() {
   //   super.initState();
@@ -109,8 +101,9 @@ class _AuthFormState extends State<AuthForm>
       setState(() {
         isLoading = true;
       });
-      final validate = formKey.currentState?.validate() ?? false;
 
+      final validate = formKey.currentState?.validate() ?? false;
+      print("${formData.values} values ");
       if (!validate) {
         setState(() {
           isLoading = false;
@@ -119,7 +112,6 @@ class _AuthFormState extends State<AuthForm>
       }
 
       formKey.currentState?.save();
-
       try {
         if (typeAuth == TypeAuth.signIn) {
           await authProvider
@@ -129,11 +121,9 @@ class _AuthFormState extends State<AuthForm>
               .then(
                 (value) => setState(() {
                   isLoading = false;
-                  Navigator.of(context)
-                      .pushReplacementNamed(ConstantRoutes.middleRoute);
+                  Navigator.of(context).pushNamed(ConstantRoutes.middleRoute);
                 }),
               );
-          // entrar
         } else {
           await authProvider
               .signUp(
@@ -174,6 +164,7 @@ class _AuthFormState extends State<AuthForm>
     }
 
     void handleSave({String? text, required String field}) {
+      print("$text  text");
       formData[field] = text ?? "";
     }
 
@@ -190,102 +181,91 @@ class _AuthFormState extends State<AuthForm>
       if (auth == TypeAuth.signUp) {
         //estou saindo do menor indo para maior
         //isso e essencial para controller funcionar
-        animationController?.forward();
+        // animationController?.forward();
         return;
       }
-      animationController?.reverse();
+      // animationController?.reverse();
     }
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.linear,
-      // height: heightAnimation?.value.height ??
-      //     (typeAuth == TypeAuth.signUp ? 400 : 330),
-      height: typeAuth == TypeAuth.signUp ? 400 : 330,
-      width: deviceSize.width * 0.78,
-      padding: const EdgeInsets.only(top: 20),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        elevation: 8,
-        child: Form(
-          key: formKey,
-          child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              children: [
-                TextFormField(
-                  textInputAction: TextInputAction.next,
-                  validator: validatorString,
-                  onSaved: (text) => handleSave(text: text, field: "email"),
-                  decoration: const InputDecoration(label: Text("E-mail")),
-                ),
-                TextFormField(
-                  obscureText: true,
-                  controller: passwordController,
-                  onSaved: (text) => handleSave(text: text, field: "password"),
-                  validator: validatorPassword,
-                  decoration: const InputDecoration(
-                    label: Text("Senha"),
+    return SingleChildScrollView(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+        // height: heightAnimation?.value.height ??
+        //     (typeAuth == TypeAuth.signUp ? 400 : 330),
+        height: typeAuth == TypeAuth.signUp ? 400 : 330,
+        width: deviceSize.width * 0.78,
+        padding: const EdgeInsets.only(top: 20),
+        child: Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          elevation: 8,
+          child: Form(
+            key: formKey,
+            child: ListView(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                children: [
+                  TextFormField(
+                    textInputAction: TextInputAction.next,
+                    validator: validatorString,
+                    onSaved: (text) => handleSave(text: text, field: "email"),
+                    decoration: const InputDecoration(label: Text("E-mail")),
                   ),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.linear,
-                  constraints: BoxConstraints(
-                    maxHeight: typeAuth == TypeAuth.signIn ? 0 : 120,
-                    minHeight: typeAuth == TypeAuth.signIn ? 0 : 60,
-                  ),
-                  child: FadeTransition(
-                    //The argument type 'Animation<double>?' can't be assigned to the parameter type 'Animation<double>'
-                    //precisa do !
-                    opacity: opacitAnimation!,
-                    child: SlideTransition(
-                      position: slideAnimaiton!,
-                      child: TextFormField(
-                        obscureText: true,
-                        onSaved: (text) =>
-                            handleSave(text: text, field: "confirmPassword"),
-                        decoration: const InputDecoration(
-                            label: Text("Confirmar senha")),
-                        validator: validatorPasswordIsEqual,
-                      ),
+                  TextFormField(
+                    obscureText: true,
+                    controller: passwordController,
+                    onSaved: (text) =>
+                        handleSave(text: text, field: "password"),
+                    validator: validatorPassword,
+                    decoration: const InputDecoration(
+                      label: Text("Senha"),
                     ),
                   ),
-                ),
-                isLoading
-                    //para diminuir um tamanho pode usar o tranform
-                    ? Transform.scale(
-                        scaleY: 0.6,
-                        scaleX: 0.1,
-                        child: CircularProgressIndicator(
-                          color: Theme.of(context).primaryColor,
+                  if (typeAuth == TypeAuth.signUp)
+                    TextFormField(
+                      obscureText: true,
+                      onSaved: (text) =>
+                          handleSave(text: text, field: "confirmPassword"),
+                      decoration:
+                          const InputDecoration(label: Text("Confirmar senha")),
+                      validator: validatorPasswordIsEqual,
+                    ),
+                  isLoading
+                      //para diminuir um tamanho pode usar o tranform
+                      ? Transform.scale(
+                          scaleY: 0.6,
+                          scaleX: 0.1,
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Theme.of(context).primaryColor),
+                              ),
+                              onPressed: handleSubmit,
+                              child: const Text("Entrar")),
                         ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).primaryColor),
-                            ),
-                            onPressed: handleSubmit,
-                            child: const Text("Entrar")),
-                      ),
-                typeAuth == TypeAuth.signUp
-                    ? TextButton(
-                        onPressed: () => toggleAuth(TypeAuth.signIn),
-                        child: Text(
-                          "Deseja realizar login?",
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                        ))
-                    : TextButton(
-                        onPressed: () => toggleAuth(TypeAuth.signUp),
-                        child: Text(
-                          "Deseja registrar?",
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                        ))
-              ]),
+                  typeAuth == TypeAuth.signUp
+                      ? TextButton(
+                          onPressed: () => toggleAuth(TypeAuth.signIn),
+                          child: Text(
+                            "Deseja realizar login?",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor),
+                          ))
+                      : TextButton(
+                          onPressed: () => toggleAuth(TypeAuth.signUp),
+                          child: Text(
+                            "Deseja registrar?",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor),
+                          ))
+                ]),
+          ),
         ),
       ),
     );
