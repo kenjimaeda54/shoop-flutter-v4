@@ -65,7 +65,11 @@ class MyApp extends StatelessWidget {
             fontFamily: "Lato",
             colorScheme: ColorScheme.fromSwatch().copyWith(
               secondary: Colors.deepOrange,
-            )),
+            ),
+            pageTransitionsTheme: const PageTransitionsTheme(builders: {
+              TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+              TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            })),
         home: const AuthOrHome(),
         //sera essa rota que ira determinar se e auth ou home
         debugShowCheckedModeBanner: false,

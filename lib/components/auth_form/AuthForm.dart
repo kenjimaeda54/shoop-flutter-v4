@@ -103,7 +103,6 @@ class _AuthFormState extends State<AuthForm>
       });
 
       final validate = formKey.currentState?.validate() ?? false;
-      print("${formData.values} values ");
       if (!validate) {
         setState(() {
           isLoading = false;

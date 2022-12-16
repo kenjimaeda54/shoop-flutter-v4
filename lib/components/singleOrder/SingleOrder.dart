@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import "package:flutter/material.dart";
 import 'package:shopp/models/OrderModel.dart';
 import "package:intl/intl.dart";
@@ -22,19 +24,27 @@ class _SingleOrderState extends State<SingleOrder> {
       });
     }
 
-    return Card(
-      child: Column(children: [
-        ListTile(
-            title: Text("R\$ ${widget.order.total.toStringAsFixed(2)}"),
-            subtitle:
-                Text(DateFormat("dd/MM/yyyy  HH:mm").format(widget.order.date)),
-            trailing: IconButton(
-                onPressed: handleExpanded,
-                icon: const Icon(Icons.expand_more))),
-        if (isExpanded)
-          Container(
+    heightItensCard() => (widget.order.products.toList().length * 40) + 10.0;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+      height: isExpanded ? heightItensCard() + 85 : 85,
+      child: Card(
+        elevation: 5,
+        child: Column(children: [
+          ListTile(
+              title: Text("R\$ ${widget.order.total.toStringAsFixed(2)}"),
+              subtitle: Text(
+                  DateFormat("dd/MM/yyyy  HH:mm").format(widget.order.date)),
+              trailing: IconButton(
+                  onPressed: handleExpanded,
+                  icon: const Icon(Icons.expand_more))),
+          //precisa também colocar aqui para evitar overflow
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-            height: (widget.order.products.toList().length * 40) + 10,
+            height: isExpanded ? heightItensCard() : 0,
             child: ListView(
               children: widget.order.products
                   .map((it) => Row(
@@ -55,8 +65,9 @@ class _SingleOrderState extends State<SingleOrder> {
                       ))
                   .toList(),
             ),
-          )
-      ]),
+          ),
+        ]),
+      ),
     );
   }
 }

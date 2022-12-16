@@ -22,11 +22,30 @@ class ProductDetails extends StatelessWidget {
           expandedHeight: 300,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
-            title: Text(product.title,
-                style: const TextStyle(color: Colors.black87)),
-            background: Hero(
-              tag: product.id,
-              child: Image.network(product.imageUrl, fit: BoxFit.cover),
+            title: Text(
+              product.title,
+              style: const TextStyle(color: Colors.white),
+            ),
+            background: Stack(
+              //para expandir a foto dentro da stack
+              fit: StackFit.expand,
+              children: [
+                Hero(
+                  tag: product.id,
+                  child: Image.network(product.imageUrl, fit: BoxFit.cover),
+                ),
+                //para criar um container decoration
+                const DecoratedBox(
+                    decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      end: Alignment(0, 0),
+                      begin: Alignment(0, 0.6),
+                      colors: [
+                        Color.fromRGBO(0, 0, 0, 0.6),
+                        Color.fromRGBO(0, 0, 0, 0)
+                      ]),
+                ))
+              ],
             ),
           ),
         ),
