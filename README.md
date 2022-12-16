@@ -1,9 +1,11 @@
 # Shoop
-Versao 4 do aplicativo de (loja)(https://github.com/kenjimaeda54/shoop-flutter-v1)  </br>
-Toque final do aplicativo, finalizei com animacoes
+Versão 4 do aplicativo de (loja)(https://github.com/kenjimaeda54/shoop-flutter-v1)  </br>
+Toque final do aplicativo, finalizei com animações
+
 
 ## Feature
-- Abaixo alguns exemplos de animacoes que e possivel fazer no flutter
+- Abaixo alguns exemplos de animações que e possível fazer no flutter
+- Para criar animações com controller precisa implementar o mixin SingleTickerProviderStateMixin
 
 ```dart
   AnimationController? animationController;
@@ -32,8 +34,6 @@ Toque final do aplicativo, finalizei com animacoes
       begin: 0.0,
       end: 1.0,
     ).animate(
-      //e argument type 'AnimationController?' can't be assigned to the parameter type 'Animation<double>'
-      //precisa forcar o animated animationController
       CurvedAnimation(parent: animationController!, curve: Curves.linear),
     );
 
@@ -55,10 +55,9 @@ Toque final do aplicativo, finalizei com animacoes
 ```
 
 ##
-- Flutter tambm disponibiliza um widge para animacao no exemplo abaixo estou realizando abertura dos detalhes de um card de maneira suave
+- Flutter também disponibiliza um widget para animação, no exemplo abaixo, estou realizando abertura dos detalhes de um card de maneira suave
 - Para evitar overflow precisei aplicar no container pai e no componente que expande quando clicado
-
-
+- Com um widget não preciso implmentar mixin
 
 
 ```flutter
@@ -111,9 +110,9 @@ AnimatedContainer(
 ```
 
 ## 
-- Outra animacao interessante e usar o Hero
-- Com ele consigo aplica um efeito a partir da imagem de origin indo  ate  iamgem de destino
-- Para utilizar  a imagem de origin e detino precisam de uma tag unica 
+- Outra animação interessante e usar o Hero
+- Com ele consigo aplica um efeito a partir da imagem de origin indo  até  imagem de destino
+- Hero obriga o uso de uma tag única, tanto na  origin quanto destino
 
 
 ```flutter
@@ -138,10 +137,9 @@ Hero(
 ```
 
 ## 
-- CustomScroolView e um componente interessante permite adicionarmos uma iamgem no navigation bar
-- Com a propriedade pinned igual a verdadeiro a iamgem fica fixa e conforne scrolla a barra fica apenas o titulo
+- CustomScroolView e um componente interessante, permite adicionarmos uma imagem no navigation bar
+- Pinned igual a verdadeiro a imagem fica fixa e conforme scrolla a barra fica apenas o titulo
 - CustonScroolView utiliza slivers para trabalhar
-
 
 ```flutter
 Scaffold( 
@@ -210,7 +208,7 @@ Scaffold(
 ```
 
 ##
-- Por fim apliquei fade nas transicoes de telas ,nessa abordagem precisa criar uma classe para extender PageTransitionsBuilder
+- Por fim apliquei fade nas transições de telas ,nessa abordagem precisa criar uma classe para extender PageTransitionsBuilder
 
 ```flutter
 //FadeTransitionRoute
