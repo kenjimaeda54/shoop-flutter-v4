@@ -115,7 +115,7 @@ AnimatedContainer(
 - Hero obriga o uso de uma tag única, tanto na  origin quanto destino
 
 
-```flutter
+```dart
 //componente de origin
 Hero(
         tag: product.id,
@@ -210,7 +210,7 @@ Scaffold(
 ##
 - Por fim apliquei fade nas transições de telas ,nessa abordagem precisa criar uma classe para extender PageTransitionsBuilder
 
-```flutter
+```dart
 //FadeTransitionRoute
 class FadeTransitionRoute extends PageTransitionsBuilder {
   @override
