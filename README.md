@@ -141,7 +141,7 @@ Hero(
 - Pinned igual a verdadeiro a imagem fica fixa e conforme scrolla a barra fica apenas o titulo
 - CustonScroolView utiliza slivers para trabalhar
 
-```flutter
+```dart
 Scaffold( 
         body: CustomScrollView(
       slivers: [
