@@ -60,7 +60,7 @@ Toque final do aplicativo, finalizei com animações
 - Com um widget não preciso implmentar mixin
 
 
-```flutter
+```dart
 AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.linear,
